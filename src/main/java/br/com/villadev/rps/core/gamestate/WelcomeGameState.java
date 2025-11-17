@@ -24,15 +24,11 @@ class WelcomeGameState extends GameState {
     public GameState handleRequest(final BufferedReader reader) throws IOException {
         MenuItem menuItem = CLIInteractionHelper.promptUntilValid(GameMenu.WELCOME_OPTION, reader);
         if (menuItem == null) return machine.getExitGameState();
-        switch (menuItem.number()) {
-            case "1":
-                return machine.getHelpState();
-            case "2":
-                return machine.getMatchState();
-            case "3":
-                return machine.getExitGameState();
-            default:
-                return this;
-        }
+        return switch (menuItem.number()) {
+            case "1" -> machine.getHelpState();
+            case "2" -> machine.getMatchState();
+            case "3" -> machine.getExitGameState();
+            default -> this;
+        };
     }
 }

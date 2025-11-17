@@ -1,8 +1,5 @@
 package br.com.villadev.rps.core.gamestate;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-
 public class RPSStateMachine {
 
     private final GameContext context;
