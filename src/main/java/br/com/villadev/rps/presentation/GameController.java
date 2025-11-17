@@ -10,7 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Random;
+import java.util.SplittableRandom;
 
 public class GameController {
 
@@ -19,7 +19,7 @@ public class GameController {
     public void listenUserInput(final InputStream inputStream) throws IOException {
         log.debug("Listening user input");
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        GameContext context = new GameContext(reader, new Random(), 3);
+    GameContext context = new GameContext(reader, new SplittableRandom(), 3);
         RPSStateMachine machine = new RPSStateMachine(context);
 
         boolean running = true;
