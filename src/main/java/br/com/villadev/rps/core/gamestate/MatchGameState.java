@@ -50,13 +50,8 @@ class MatchGameState extends GameState {
         Player computer = new Player("computer");
         Player user = new Player("user");
 
-        CLIInteractionHelper.print(GameMenu.PLAYER_ROLE_OPTION);
-        MenuItem menuItem = CLIInteractionHelper.readInput(GameMenu.PLAYER_ROLE_OPTION, reader.readLine());
-
-        if (menuItem == null) {
-            System.out.println("Invalid option, please select from the Menu");
-            return this;
-        }
+        MenuItem menuItem = CLIInteractionHelper.promptUntilValid(GameMenu.PLAYER_ROLE_OPTION, reader);
+        if (menuItem == null) return machine.getExitGameState();
 
         switch (menuItem.number()) {
             case "1":

@@ -22,24 +22,17 @@ class WelcomeGameState extends GameState {
 
     @Override
     public GameState handleRequest(final BufferedReader reader) throws IOException {
-        while (true) {
-            CLIInteractionHelper.print(GameMenu.WELCOME_OPTION);
-            MenuItem menuItem = CLIInteractionHelper.readInput(GameMenu.WELCOME_OPTION, reader.readLine());
-            if (menuItem == null) {
-                System.out.println("Invalid option, please select from the Menu");
+        MenuItem menuItem = CLIInteractionHelper.promptUntilValid(GameMenu.WELCOME_OPTION, reader);
+        if (menuItem == null) return machine.getExitGameState();
+        switch (menuItem.number()) {
+            case "1":
+                return machine.getHelpState();
+            case "2":
+                return machine.getMatchState();
+            case "3":
+                return machine.getExitGameState();
+            default:
                 return this;
-            }
-            switch (menuItem.number()) {
-                case "1":
-                    return machine.getHelpState();
-                case "2":
-                    return machine.getMatchState();
-                case "3":
-                    return machine.getExitGameState();
-                default:
-                    System.out.println("Invalid option, please select from the Menu");
-                    return this;
-            }
         }
     }
 }
