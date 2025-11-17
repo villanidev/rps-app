@@ -9,30 +9,36 @@ import java.io.IOException;
 
 class WelcomeGameState extends GameState {
 
+    private final RPSStateMachine machine;
+
+    WelcomeGameState(RPSStateMachine machine) {
+        this.machine = machine;
+    }
+
     @Override
-    void printStatus() {
+    public void printStatus() {
         System.out.println("in WelcomeState");
     }
 
     @Override
-    void handleRequest(final BufferedReader reader) throws IOException {
+    public GameState handleRequest(final BufferedReader reader) throws IOException {
         while (true) {
             CLIInteractionHelper.print(GameMenu.WELCOME_OPTION);
             MenuItem menuItem = CLIInteractionHelper.readInput(GameMenu.WELCOME_OPTION, reader.readLine());
             if (menuItem == null) {
                 System.out.println("Invalid option, please select from the Menu");
-                break;
+                return this;
             }
             switch (menuItem.number()) {
                 case "1":
-                    current = helpState;
-                    return;
+                    return machine.getHelpState();
                 case "2":
-                    current = matchState;
-                    return;
+                    return machine.getMatchState();
                 case "3":
-                    current = exitGameState;
-                    return;
+                    return machine.getExitGameState();
+                default:
+                    System.out.println("Invalid option, please select from the Menu");
+                    return this;
             }
         }
     }
