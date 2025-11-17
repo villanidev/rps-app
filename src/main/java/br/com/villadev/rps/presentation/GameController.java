@@ -17,9 +17,9 @@ public class GameController {
     private static final Logger log = LoggerFactory.getLogger(GameController.class);
 
     public void listenUserInput(final InputStream inputStream) throws IOException {
-        log.debug("Listening user input");
+        log.info("Game session started. Waiting for user input...");
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-    GameContext context = new GameContext(reader, new SplittableRandom(), 3);
+        GameContext context = new GameContext(reader, new SplittableRandom(), 3);
         RPSStateMachine machine = new RPSStateMachine(context);
 
         boolean running = true;
@@ -33,5 +33,6 @@ public class GameController {
                 machine.setCurrent(next);
             }
         }
+        log.info("Game session ended.");
     }
 }
