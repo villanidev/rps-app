@@ -4,6 +4,8 @@ import br.com.villadev.rps.core.entities.*;
 import br.com.villadev.rps.parser.CLIInteractionHelper;
 import br.com.villadev.rps.presentation.GameMenu;
 import br.com.villadev.rps.presentation.MenuItem;
+import br.com.villadev.rps.core.engine.GameEngine;
+import br.com.villadev.rps.core.engine.Outcome;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,6 +20,7 @@ class MatchGameState extends GameState {
     private final Map<String, PlayerRole> availableRoles = new HashMap<>();
     private int rounds = 0;
     private final int defaultRounds;
+    private final GameEngine engine = new GameEngine();
 
     MatchGameState(RPSStateMachine machine, GameContext context) {
         this.machine = machine;
@@ -39,9 +42,7 @@ class MatchGameState extends GameState {
 
     @Override
     public GameState handleRequest(final BufferedReader reader) throws IOException {
-        if (rounds == defaultRounds) {
-            return machine.getReplayState();
-        }
+        if (engine.isFinished(rounds, defaultRounds)) return machine.getReplayState();
 
         int randomNumber;
         Player computer = new Player("computer");
@@ -86,23 +87,7 @@ class MatchGameState extends GameState {
     private void printResult(final Player user, final Player computer) {
         System.out.println("you have chosen: " + user.getRole().alias());
         System.out.println("computer has chosen: " + computer.getRole().alias());
-        System.out.println("round winner is: " +
-                calculateWinner(user.getRole().alias(), computer.getRole().alias()));
-    }
-
-    private String calculateWinner(String userRole, String computerRole) {
-        if (userRole.equals(computerRole)) {
-            return "Nobody, it's a tie!";
-        } else if (isPlayerWin(userRole, computerRole)) {
-            return "You won!";
-        } else {
-            return "Computer won!";
-        }
-    }
-
-    private boolean isPlayerWin(String userRole, String computerRole) {
-        return userRole.equals("rock") && computerRole.equals("scissors")
-                || (userRole.equals("scissors") && computerRole.equals("paper"))
-                || (userRole.equals("paper") && computerRole.equals("rock"));
+        Outcome outcome = engine.decide(user.getRole().alias(), computer.getRole().alias());
+        System.out.println("round winner is: " + engine.toHumanMessage(outcome));
     }
 }
