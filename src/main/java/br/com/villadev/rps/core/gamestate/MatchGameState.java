@@ -22,12 +22,15 @@ class MatchGameState extends GameState {
     private final Map<String, PlayerRole> availableRoles = new HashMap<>();
     private int rounds = 0;
     private final int defaultRounds;
+    private int totalRounds;
+    private boolean roundsConfigured = false;
     private final GameEngine engine = new GameEngine();
 
     MatchGameState(RPSStateMachine machine, GameContext context) {
         this.machine = machine;
         this.context = context;
         this.defaultRounds = context.getDefaultRounds();
+        this.totalRounds = this.defaultRounds;
         availableRoles.put("0", Role.ROCK);
         availableRoles.put("1", Role.PAPER);
         availableRoles.put("2", Role.SCISSORS);
@@ -35,6 +38,8 @@ class MatchGameState extends GameState {
 
     void reset() {
         this.rounds = 0;
+        this.totalRounds = this.defaultRounds;
+        this.roundsConfigured = false;
     }
 
     @Override
@@ -44,7 +49,21 @@ class MatchGameState extends GameState {
 
     @Override
     public GameState handleRequest(final BufferedReader reader) throws IOException {
-        if (engine.isFinished(rounds, defaultRounds)) return machine.getReplayState();
+        // On first entry, allow the player to configure the number of rounds (or accept default)
+        if (!roundsConfigured) {
+            Integer chosen = CLIInteractionHelper.promptIntWithDefault(
+                "How many rounds would you like to play?",
+                reader,
+                defaultRounds,
+                1,
+                50
+            );
+            if (chosen == null) return machine.getExitGameState(); // EOF
+            totalRounds = chosen;
+            roundsConfigured = true;
+        }
+
+        if (engine.isFinished(rounds, totalRounds)) return machine.getReplayState();
 
         MenuItem menuItem = CLIInteractionHelper.promptUntilValid(GameMenu.PLAYER_ROLE_OPTION, reader);
         if (menuItem == null) return machine.getExitGameState();

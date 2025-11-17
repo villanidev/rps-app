@@ -15,6 +15,35 @@ public class CLIInteractionHelper {
             System.out.println(MessageFormat.format("{0}-{1}", menuItem.number(), menuItem.text()));
         });
     }
+
+    /**
+     * Prompts the user for an integer value with bounds and a default. If the user inputs an empty line,
+     * the defaultValue is returned. Keeps prompting until a valid integer within [min, max] is provided.
+     * Returns null if EOF is reached (reader.readLine() == null).
+     */
+    public static Integer promptIntWithDefault(String prompt, BufferedReader reader, int defaultValue, int min, int max) throws IOException {
+        while (true) {
+            System.out.println(prompt + " [default: " + defaultValue + "]");
+            String line = reader.readLine();
+            if (line == null) {
+                return null; // EOF
+            }
+            String trimmed = line.trim();
+            if (trimmed.isEmpty()) {
+                return defaultValue;
+            }
+            try {
+                int value = Integer.parseInt(trimmed);
+                if (value < min || value > max) {
+                    System.out.println("Please enter a number between " + min + " and " + max + ".");
+                    continue;
+                }
+                return value;
+            } catch (NumberFormatException ex) {
+                System.out.println("Please enter a valid number.");
+            }
+        }
+    }
     public static MenuItem readInput(GameMenu menuOption, String text) {
         return CLIParser.parse(menuOption, text);
     }

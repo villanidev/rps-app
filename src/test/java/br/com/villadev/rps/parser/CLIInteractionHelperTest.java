@@ -31,4 +31,32 @@ class CLIInteractionHelperTest {
             assertNull(item);
         }
     }
+    
+
+    @Test
+    void promptIntWithDefault_accepts_blank_as_default() throws IOException {
+        try (BufferedReader reader = new BufferedReader(new StringReader("\n"))) {
+            Integer value = CLIInteractionHelper.promptIntWithDefault("Rounds?", reader, 3, 1, 10);
+            assertNotNull(value);
+            assertEquals(3, value);
+        }
+    }
+
+    @Test
+    void promptIntWithDefault_reprompts_on_invalid_then_returns_valid() throws IOException {
+        // invalid: 'foo', out-of-range: '0', valid: '5'
+        try (BufferedReader reader = new BufferedReader(new StringReader("foo\n0\n5\n"))) {
+            Integer value = CLIInteractionHelper.promptIntWithDefault("Rounds?", reader, 3, 1, 10);
+            assertEquals(5, value);
+        }
+    }
+
+    @Test
+    void promptIntWithDefault_returns_null_on_eof() throws IOException {
+        try (BufferedReader reader = new BufferedReader(new StringReader(""))) {
+            Integer value = CLIInteractionHelper.promptIntWithDefault("Rounds?", reader, 3, 1, 10);
+            assertNull(value);
+        }
+    }
+
 }
