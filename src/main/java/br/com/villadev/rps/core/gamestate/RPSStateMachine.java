@@ -34,23 +34,23 @@ public class RPSStateMachine {
         this.current = next;
     }
 
-    public WelcomeGameState getWelcomeState() {
+    GameState getWelcomeState() {
         return welcomeState;
     }
 
-    public HelpGameState getHelpState() {
+    GameState getHelpState() {
         return helpState;
     }
 
-    public ExitGameState getExitGameState() {
+    GameState getExitGameState() {
         return exitGameState;
     }
 
-    public MatchGameState getMatchState() {
+    GameState getMatchState() {
         return matchState;
     }
 
-    public ReplayGameState getReplayState() {
+    GameState getReplayState() {
         return replayState;
     }
 

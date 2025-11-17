@@ -46,39 +46,18 @@ class MatchGameState extends GameState {
     public GameState handleRequest(final BufferedReader reader) throws IOException {
         if (engine.isFinished(rounds, defaultRounds)) return machine.getReplayState();
 
-        int randomNumber;
-        Player computer = new Player("computer");
-        Player user = new Player("user");
-
         MenuItem menuItem = CLIInteractionHelper.promptUntilValid(GameMenu.PLAYER_ROLE_OPTION, reader);
         if (menuItem == null) return machine.getExitGameState();
 
-        switch (menuItem.number()) {
-            case "1":
-                randomNumber = context.getRandom().nextInt(availableRoles.size());
-                computer.setRole(availableRoles.get(String.valueOf(randomNumber)));
-                user.setRole(Role.ROCK);
-                printResult(user, computer);
-                rounds++;
-                return this;
-            case "2":
-                randomNumber = context.getRandom().nextInt(availableRoles.size());
-                computer.setRole(availableRoles.get(String.valueOf(randomNumber)));
-                user.setRole(Role.PAPER);
-                printResult(user, computer);
-                rounds++;
-                return this;
-            case "3":
-                randomNumber = context.getRandom().nextInt(availableRoles.size());
-                computer.setRole(availableRoles.get(String.valueOf(randomNumber)));
-                user.setRole(Role.SCISSORS);
-                printResult(user, computer);
-                rounds++;
-                return this;
-            default:
+        return switch (menuItem.number()) {
+            case "1" -> playRound(Role.ROCK);
+            case "2" -> playRound(Role.PAPER);
+            case "3" -> playRound(Role.SCISSORS);
+            default -> {
                 System.out.println("Invalid option, please select from the Menu");
-                return this;
-        }
+                yield this;
+            }
+        };
     }
 
     private void printResult(final Player user, final Player computer) {
@@ -86,5 +65,16 @@ class MatchGameState extends GameState {
         System.out.println("computer has chosen: " + computer.getRole().alias());
         Outcome outcome = engine.decide(user.getRole().alias(), computer.getRole().alias());
         System.out.println("round winner is: " + engine.toHumanMessage(outcome));
+    }
+
+    private GameState playRound(Role userRole) {
+        int randomNumber = context.getRandom().nextInt(availableRoles.size());
+        Player computer = new Player("computer");
+        Player user = new Player("user");
+        computer.setRole(availableRoles.get(String.valueOf(randomNumber)));
+        user.setRole(userRole);
+        printResult(user, computer);
+        rounds++;
+        return this;
     }
 }
