@@ -1,6 +1,8 @@
 package br.com.villadev.rps.core.gamestate;
 
-import br.com.villadev.rps.core.entities.*;
+import br.com.villadev.rps.core.entities.Player;
+import br.com.villadev.rps.core.entities.PlayerRole;
+import br.com.villadev.rps.core.entities.Role;
 import br.com.villadev.rps.parser.CLIInteractionHelper;
 import br.com.villadev.rps.presentation.GameMenu;
 import br.com.villadev.rps.presentation.MenuItem;
@@ -26,9 +28,9 @@ class MatchGameState extends GameState {
         this.machine = machine;
         this.context = context;
         this.defaultRounds = context.getDefaultRounds();
-        availableRoles.put("0", new Rock());
-        availableRoles.put("1", new Paper());
-        availableRoles.put("2", new Scissors());
+        availableRoles.put("0", Role.ROCK);
+        availableRoles.put("1", Role.PAPER);
+        availableRoles.put("2", Role.SCISSORS);
     }
 
     void reset() {
@@ -60,21 +62,21 @@ class MatchGameState extends GameState {
             case "1":
                 randomNumber = context.getRandom().nextInt(availableRoles.size());
                 computer.setRole(availableRoles.get(String.valueOf(randomNumber)));
-                user.setRole(new Rock());
+                user.setRole(Role.ROCK);
                 printResult(user, computer);
                 rounds++;
                 return this;
             case "2":
                 randomNumber = context.getRandom().nextInt(availableRoles.size());
                 computer.setRole(availableRoles.get(String.valueOf(randomNumber)));
-                user.setRole(new Paper());
+                user.setRole(Role.PAPER);
                 printResult(user, computer);
                 rounds++;
                 return this;
             case "3":
                 randomNumber = context.getRandom().nextInt(availableRoles.size());
                 computer.setRole(availableRoles.get(String.valueOf(randomNumber)));
-                user.setRole(new Scissors());
+                user.setRole(Role.SCISSORS);
                 printResult(user, computer);
                 rounds++;
                 return this;
