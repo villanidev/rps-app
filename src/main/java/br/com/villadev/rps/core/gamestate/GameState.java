@@ -3,20 +3,15 @@ package br.com.villadev.rps.core.gamestate;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-abstract class GameState {
+public abstract class GameState {
 
-    static GameState welcomeState;
+    /**
+     * Print current state's status to the console.
+     */
+    public abstract void printStatus();
 
-    static GameState helpState;
-
-    static GameState exitGameState;
-
-    static GameState matchState;
-
-    static GameState replayState;
-
-    static GameState current;
-
-    abstract void printStatus();
-    abstract void handleRequest(final BufferedReader reader) throws IOException;
+    /**
+     * Handle user input and return the next state. If null is returned, the game should terminate.
+     */
+    public abstract GameState handleRequest(final BufferedReader reader) throws IOException;
 }

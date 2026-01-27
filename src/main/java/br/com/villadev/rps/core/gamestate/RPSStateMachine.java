@@ -1,23 +1,60 @@
 package br.com.villadev.rps.core.gamestate;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-
-@SuppressWarnings("InfiniteLoopStatement")
 public class RPSStateMachine {
 
-    public void startMachine(BufferedReader reader) throws IOException {
-        GameState.welcomeState = new WelcomeGameState();
-        GameState.helpState = new HelpGameState();
-        GameState.exitGameState = new ExitGameState();
-        GameState.matchState = new MatchGameState();
-        GameState.replayState = new ReplayGameState();
+    private final GameContext context;
 
-        GameState.current = GameState.welcomeState;
+    private final WelcomeGameState welcomeState;
+    private final HelpGameState helpState;
+    private final ExitGameState exitGameState;
+    private final MatchGameState matchState;
+    private final ReplayGameState replayState;
 
-        while (true) {
-            GameState.current.printStatus();
-            GameState.current.handleRequest(reader);
+    private GameState current;
+
+    public RPSStateMachine(GameContext context) {
+        this.context = context;
+        this.welcomeState = new WelcomeGameState(this);
+        this.helpState = new HelpGameState(this);
+        this.exitGameState = new ExitGameState(this);
+        this.matchState = new MatchGameState(this, context);
+        this.replayState = new ReplayGameState(this);
+        this.current = welcomeState;
+    }
+
+    public GameState getCurrent() {
+        return current;
+    }
+
+    public void setCurrent(GameState next) {
+        // Reset match rounds when entering match state from a different state
+        if (next == matchState && current != matchState) {
+            matchState.reset();
         }
+        this.current = next;
+    }
+
+    GameState getWelcomeState() {
+        return welcomeState;
+    }
+
+    GameState getHelpState() {
+        return helpState;
+    }
+
+    GameState getExitGameState() {
+        return exitGameState;
+    }
+
+    GameState getMatchState() {
+        return matchState;
+    }
+
+    GameState getReplayState() {
+        return replayState;
+    }
+
+    public GameContext getContext() {
+        return context;
     }
 }

@@ -8,31 +8,25 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 class ReplayGameState extends GameState {
+
+    private final RPSStateMachine machine;
+
+    ReplayGameState(RPSStateMachine machine) {
+        this.machine = machine;
+    }
     @Override
-    void printStatus() {
+    public void printStatus() {
         System.out.println("in ReplayState");
     }
 
     @Override
-    void handleRequest(final BufferedReader reader) throws IOException {
-        while (true) {
-            CLIInteractionHelper.print(GameMenu.REPLAY_OPTION);
-            MenuItem menuItem = CLIInteractionHelper.readInput(GameMenu.REPLAY_OPTION, reader.readLine());
-            if (menuItem == null) {
-                System.out.println("Invalid option, please select from the Menu");
-                break;
-            }
-
-            switch (menuItem.number()) {
-                case "1":
-                    current = matchState;
-                    return;
-                case "2":
-                    current = exitGameState;
-                    return;
-                default:
-                    System.out.println("Invalid option, please select from the Menu");
-            }
-        }
+    public GameState handleRequest(final BufferedReader reader) throws IOException {
+        MenuItem menuItem = CLIInteractionHelper.promptUntilValid(GameMenu.REPLAY_OPTION, reader);
+        if (menuItem == null) return machine.getExitGameState();
+        return switch (menuItem.number()) {
+            case "1" -> machine.getMatchState();
+            case "2" -> machine.getExitGameState();
+            default -> this;
+        };
     }
 }

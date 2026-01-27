@@ -3,13 +3,19 @@ package br.com.villadev.rps.core.gamestate;
 import java.io.BufferedReader;
 
 class HelpGameState extends GameState {
+
+    private final RPSStateMachine machine;
+
+    HelpGameState(RPSStateMachine machine) {
+        this.machine = machine;
+    }
     @Override
-    void printStatus() {
+    public void printStatus() {
         System.out.println("in HelpState");
     }
 
     @Override
-    void handleRequest(final BufferedReader reader) {
+    public GameState handleRequest(final BufferedReader reader) {
         System.out.println("""
                 Paper-Rock-Scissors is a game for two players.\s
                 Each player simultaneously chooses a role to play:
@@ -21,6 +27,6 @@ class HelpGameState extends GameState {
                 • Rock beats (blunts) scissors
                 • Scissors beats (cuts) paper
                 """);
-        current = welcomeState;
+        return machine.getWelcomeState();
     }
 }
